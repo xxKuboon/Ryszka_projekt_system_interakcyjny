@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Task service interface.
  */
@@ -6,6 +7,7 @@
 namespace App\Service;
 
 use App\Entity\Task;
+use App\Entity\User;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
 /**
@@ -18,8 +20,31 @@ interface TaskServiceInterface
      *
      * @param int $page Page number
      *
-     * @return PaginationInterface<string, mixed> Paginated list
+     * @return PaginationInterface Paginated list
      */
     public function getPaginatedList(int $page): PaginationInterface;
 
+    /**
+     * Get paginated list by author.
+     *
+     * @param int  $page   Page number
+     * @param User $author Author
+     *
+     * @return PaginationInterface Paginated list
+     */
+    public function getPaginatedListByAuthor(int $page, User $author): PaginationInterface;
+
+    /**
+     * Save entity.
+     *
+     * @param Task $task Task entity
+     */
+    public function save(Task $task): void;
+
+    /**
+     * Delete entity.
+     *
+     * @param Task $task Task entity
+     */
+    public function delete(Task $task): void;
 }

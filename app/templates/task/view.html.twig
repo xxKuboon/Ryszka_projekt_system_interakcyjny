@@ -6,23 +6,49 @@
 
 {% block body %}
     <h1>{{ 'title.task_details'|trans({'%id%': task.id|default('')}) }}</h1>
+
     {% if task is defined and task|length %}
         <dl class="dl-horizontal">
             <dt>{{ 'label.id'|trans }}</dt>
             <dd>{{ task.id }}</dd>
+
             <dt>{{ 'label.created_at'|trans }}</dt>
             <dd>{{ task.createdAt|format_date('long') }}</dd>
+
             <dt>{{ 'label.updated_at'|trans }}</dt>
             <dd>{{ task.updatedAt|format_date('long') }}</dd>
+
             <dt>{{ 'label.title'|trans }}</dt>
-            <dd>{{  task.title }}</dd>
+            <dd>{{ task.title }}</dd>
+
             <dt>{{ 'label.category'|trans }}</dt>
-            <dd>{{  task.category.title }}</dd>
+            <dd>{{ task.category.title }}</dd>
+
+            <dt>{{ 'label.author'|trans }}</dt>
+            <dd>{{ task.author ? task.author.email : '-' }}</dd>
+
+            {% if task.description is defined and task.description is not empty %}
+                <dt>{{ 'label.description'|trans }}</dt>
+                <dd>{{ task.description|nl2br }}</dd>
+            {% endif %}
         </dl>
+
         <p>
-            <a href="{{ url('task_index') }}" title="{{ 'action.back_to_list'|trans }}">
+            <a class="btn btn-outline-secondary" href="{{ url('task_index') }}" title="{{ 'action.back_to_list'|trans }}">
                 {{ 'action.back_to_list'|trans }}
             </a>
+
+            {% if is_granted('TASK_EDIT', task) %}
+                <a class="btn btn-outline-success" href="{{ url('task_edit', {id: task.id}) }}" title="{{ 'action.edit'|trans }}">
+                    {{ 'action.edit'|trans }}
+                </a>
+            {% endif %}
+
+            {% if is_granted('TASK_DELETE', task) %}
+                <a class="btn btn-outline-danger" href="{{ url('task_delete', {id: task.id}) }}" title="{{ 'action.delete'|trans }}">
+                    {{ 'action.delete'|trans }}
+                </a>
+            {% endif %}
         </p>
     {% else %}
         <p>

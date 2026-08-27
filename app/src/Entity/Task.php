@@ -7,7 +7,9 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Task.
@@ -28,6 +30,9 @@ class Task
      * Title.
      */
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $title = null;
 
     /**
@@ -44,12 +49,27 @@ class Task
 
     /**
      * Category.
-     *
-     * @var Category
      */
     #[ORM\ManyToOne(targetEntity: Category::class, fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank]
     private ?Category $category = null;
+
+    /**
+     * Author.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank]
+    #[Assert\Type(User::class)]
+    private ?User $author = null;
+
+    /**
+     * Comment.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Type('string')]
+    private ?string $comment = null;
 
     /**
      * Getter for Id.
@@ -121,14 +141,74 @@ class Task
         $this->updatedAt = $updatedAt;
     }
 
+    /**
+     * Getter for category.
+     *
+     * @return Category|null Category
+     */
     public function getCategory(): ?Category
     {
         return $this->category;
     }
 
+    /**
+     * Setter for category.
+     *
+     * @param Category|null $category Category
+     *
+     * @return static
+     */
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Getter for author.
+     *
+     * @return User|null Author
+     */
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    /**
+     * Setter for author.
+     *
+     * @param User|null $author Author
+     *
+     * @return static
+     */
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Getter for comment.
+     *
+     * @return string|null Comment
+     */
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    /**
+     * Setter for comment.
+     *
+     * @param string|null $comment Comment
+     *
+     * @return static
+     */
+    public function setComment(?string $comment): static
+    {
+        $this->comment = $comment;
 
         return $this;
     }

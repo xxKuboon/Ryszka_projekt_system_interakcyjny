@@ -6,6 +6,8 @@
 
 namespace App\Service;
 
+use App\Entity\Task;
+use App\Entity\User;
 use App\Repository\TaskRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -17,10 +19,6 @@ class TaskService implements TaskServiceInterface
 {
     /**
      * Items per page.
-     *
-     * Use constants to define configuration options that rarely change instead
-     * of specifying them in app/config/config.yml.
-     * See https://symfony.com/doc/current/best_practices.html#configuration
      *
      * @constant int
      */
@@ -50,10 +48,70 @@ class TaskService implements TaskServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => ['task.id', 'task.createdAt', 'task.updatedAt', 'task.title'],
+                'sortFieldAllowList' => [
+                    'task.id',
+                    'task.createdAt',
+                    'task.updatedAt',
+                    'task.title',
+                    'category.title',
+                ],
                 'defaultSortFieldName' => 'task.updatedAt',
                 'defaultSortDirection' => 'desc',
             ]
         );
+    }
+
+    /**
+     * Get paginated list by author.
+     *
+     * @param int  $page   Page number
+     * @param User $author Author
+     *
+     * @return PaginationInterface Paginated list
+     */
+    public function getPaginatedListByAuthor(int $page, User $author): PaginationInterface
+    {
+        return $this->paginator->paginate(
+            $this->taskRepository->queryByAuthor($author),
+            $page,
+            self::PAGINATOR_ITEMS_PER_PAGE,
+            [
+                'sortFieldAllowList' => [
+                    'task.id',
+                    'task.createdAt',
+                    'task.updatedAt',
+                    'task.title',
+                    'category.title',
+                ],
+                'defaultSortFieldName' => 'task.updatedAt',
+                'defaultSortDirection' => 'desc',
+            ]
+        );
+    }
+
+    /**
+     * Save entity.
+     *
+     * @param Task $task Task entity
+     */
+    public function save(Task $task): void
+    {
+        if (null === $task->getId()) {
+            $task->setCreatedAt(new \DateTimeImmutable());
+        }
+
+        $task->setUpdatedAt(new \DateTimeImmutable());
+
+        $this->taskRepository->save($task);
+    }
+
+    /**
+     * Delete entity.
+     *
+     * @param Task $task Task entity
+     */
+    public function delete(Task $task): void
+    {
+        $this->taskRepository->delete($task);
     }
 }
