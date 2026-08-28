@@ -82,4 +82,4 @@ DATABASE_URL=mysql://symfony:symfony@mysql:3306/symfony?serverVersion=5.7
 * `docker compose exec php bash` - enter into PHP container
 * `docker compose exec mysql bash` - enter into MySQL container
 * `docker compose exec apache bash` - enter into Apache2 container
-* `composer init-app` - migracja bazy danych
+

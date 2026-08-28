@@ -11,7 +11,18 @@
         <div class="navigation text-center">
             {{ knp_pagination_render(pagination) }}
         </div>
-
+        <div>
+            <a class="btn btn-outline-success btn-sm" href="{{ url('task_create') }}" title="{{ 'action.create'|trans }}">
+                {{ 'action.create'|trans }}
+            </a>
+        </div>
+    {% if is_granted('CATEGORY_INDEX') %}
+        <div>
+            <a class="btn btn-outline-success btn-sm" href="{{ url('category_index') }}" title="{{ 'category'|trans }}">
+                {{ 'category'|trans }}
+            </a>
+        </div>
+    {% endif %}
         <table class="table table-striped">
             <thead>
             <tr>

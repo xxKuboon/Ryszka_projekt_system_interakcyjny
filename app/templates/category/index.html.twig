@@ -5,6 +5,11 @@
 {% block body %}
     <h1>Lista kategorii</h1>
     <a href="{{ url('category_create') }}" class="btn btn-outline-primary btn-sm"><h4>Dodaj nową kategorię</h4></a>
+    <div>
+        <a class="btn btn-outline-success btn-sm" href="{{ url('task_index') }}" title="{{ 'tasks'|trans }}">
+            {{ 'tasks'|trans }}
+        </a>
+    </div>
 
     {% if pagination is defined and pagination|length %}
         <table class="table table-striped">

@@ -40,6 +40,13 @@ final class TaskVoter extends Voter
     public const VIEW = 'TASK_VIEW';
 
     /**
+     * Getting to category page.
+     *
+     * @var string
+     */
+    public const CATEGORY = 'CATEGORY_INDEX';
+
+    /**
      * Constructor.
      *
      * @param Security $security Security helper
@@ -52,19 +59,22 @@ final class TaskVoter extends Voter
      * Determines if this voter supports the attribute and subject.
      *
      * @param string $attribute An attribute
-     * @param mixed  $subject   The subject to secure, e.g. an object the user wants to access or any other PHP type
+     * @param mixed  $subject   The subject to secure
      *
      * @return bool Result
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::DELETE, self::EDIT, self::VIEW])
+        if ($attribute === self::CATEGORY) {
+            return true;
+        }
+
+        return in_array($attribute, [self::DELETE, self::EDIT, self::VIEW], true)
             && $subject instanceof Task;
     }
 
     /**
      * Perform a single access check operation on a given attribute, subject and token.
-     * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
      * @param string         $attribute Permission name
      * @param mixed          $subject   Object
@@ -79,14 +89,12 @@ final class TaskVoter extends Voter
         if (!$user instanceof UserInterface) {
             return false;
         }
-        if (!$subject instanceof Task) {
-            return false;
-        }
 
         return match ($attribute) {
-            self::EDIT => $this->canEdit($subject, $user),
-            self::DELETE => $this->canDelete($subject, $user),
-            self::VIEW => $this->canView($subject, $user),
+            self::EDIT => $subject instanceof Task && $this->canEdit($subject, $user),
+            self::DELETE => $subject instanceof Task && $this->canDelete($subject, $user),
+            self::VIEW => $subject instanceof Task && $this->canView($subject, $user),
+            self::CATEGORY => $this->canCategory(),
             default => false,
         };
     }
@@ -128,5 +136,15 @@ final class TaskVoter extends Voter
     private function canView(Task $task, UserInterface $user): bool
     {
         return true;
+    }
+
+    /**
+     * Checks if a user can view a category tab.
+     *
+     * @return bool Result
+     */
+    private function canCategory(): bool
+    {
+        return $this->security->isGranted('ROLE_ADMIN');
     }
 }
