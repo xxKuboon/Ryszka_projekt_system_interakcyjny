@@ -309,6 +309,10 @@
         <source>message.no_pendings</source>
         <target>Brak elementów oczekujących</target>
       </trans-unit>
+      <trans-unit id="label.empty_list">
+        <source>label.empty_list</source>
+        <target>Brak elementów do wyświetlenia</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

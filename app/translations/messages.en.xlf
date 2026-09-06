@@ -14,62 +14,62 @@
         <source>label.content</source>
         <target>Content</target>
       </trans-unit>
-                  <trans-unit id="label.created_at">
-                      <source>label.created_at</source>
-                      <target>Created at</target>
-                  </trans-unit>
-                  <trans-unit id="label.category">
-                       <source>label.category</source>
-                        <target>Category</target>
-                  </trans-unit>
-                  <trans-unit id="label.author">
-                      <source>label.author</source>
-                      <target>Author</target>
-                  </trans-unit>
-                  <trans-unit id="label.votes_count">
-                       <source>label.votes_count</source>
-                        <target>Number of votes</target>
-                  </trans-unit>
-                  <trans-unit id="label.min_required">
-                       <source>label.min_required</source>
-                        <target>minimum number of votes</target>
-                  </trans-unit>
-                  <trans-unit id="label.threshold_not_met">
-                       <source>label.threshold_not_met</source>
-                        <target>not enough votes :(</target>
-                  </trans-unit>
-                  <trans-unit id="label.threshold_met">
-                       <source>label.threshold_met</source>
-                        <target>sufficient number of votes!</target>
-                  </trans-unit>
-                  <trans-unit id="label.ends_at">
-                       <source>label.ends_at</source>
-                        <target>Voting end</target>
-                  </trans-unit>
-                  <trans-unit id="label.starts_at">
-                       <source>label.starts_at</source>
-                        <target>Voting start</target>
-                  </trans-unit>
-                  <trans-unit id="label.updated_at">
-                       <source>label.updated_at</source>
-                        <target>Last updated</target>
-                  </trans-unit>
-                  <trans-unit id="label.comment">
-                       <source>label.comment</source>
-                        <target>Comment</target>
-                  </trans-unit>
-                  <trans-unit id="label.status">
-                       <source>label.status</source>
-                        <target>Idea status</target>
-                  </trans-unit>
-                  <trans-unit id="label.min_votes_required">
-                       <source>label.min_votes_required</source>
-                        <target>Minimum number of votes</target>
-                  </trans-unit>
-                  <trans-unit id="label.pending_page">
-                       <source>label.pending_page</source>
-                        <target>Ideas to accept</target>
-                  </trans-unit>
+      <trans-unit id="label.created_at">
+        <source>label.created_at</source>
+        <target>Created at</target>
+      </trans-unit>
+      <trans-unit id="label.category">
+        <source>label.category</source>
+        <target>Category</target>
+      </trans-unit>
+      <trans-unit id="label.author">
+        <source>label.author</source>
+        <target>Author</target>
+      </trans-unit>
+      <trans-unit id="label.votes_count">
+        <source>label.votes_count</source>
+        <target>Votes count</target>
+      </trans-unit>
+      <trans-unit id="label.min_required">
+        <source>label.min_required</source>
+        <target>Minimum votes required</target>
+      </trans-unit>
+      <trans-unit id="label.threshold_not_met">
+        <source>label.threshold_not_met</source>
+        <target>Not enough votes :(</target>
+      </trans-unit>
+      <trans-unit id="label.threshold_met">
+        <source>label.threshold_met</source>
+        <target>Threshold met!</target>
+      </trans-unit>
+      <trans-unit id="label.ends_at">
+        <source>label.ends_at</source>
+        <target>Voting ends at</target>
+      </trans-unit>
+      <trans-unit id="label.starts_at">
+        <source>label.starts_at</source>
+        <target>Voting starts at</target>
+      </trans-unit>
+      <trans-unit id="label.updated_at">
+        <source>label.updated_at</source>
+        <target>Updated at</target>
+      </trans-unit>
+      <trans-unit id="label.comment">
+        <source>label.comment</source>
+        <target>Comment</target>
+      </trans-unit>
+      <trans-unit id="label.status">
+        <source>label.status</source>
+        <target>Idea status</target>
+      </trans-unit>
+      <trans-unit id="label.min_votes_required">
+        <source>label.min_votes_required</source>
+        <target>Minimum number of votes</target>
+      </trans-unit>
+      <trans-unit id="label.pending_page">
+        <source>label.pending_page</source>
+        <target>Ideas to accept</target>
+      </trans-unit>
 
       <trans-unit id="message.empty_list">
         <source>message.empty_list</source>
@@ -81,7 +81,7 @@
       </trans-unit>
       <trans-unit id="message.the_voting_hasnt_started">
         <source>message.the_voting_hasnt_started</source>
-        <target>The voting has not started yet!</target>
+        <target>The voting hasn't started yet!</target>
       </trans-unit>
       <trans-unit id="message.voting_has_ended">
         <source>message.voting_has_ended</source>
@@ -89,7 +89,7 @@
       </trans-unit>
       <trans-unit id="message.accept">
         <source>message.accept</source>
-        <target>Are you sure you want to accept this ...</target>
+        <target>Are you sure you want to accept this idea?</target>
       </trans-unit>
       <trans-unit id="message.reject">
         <source>message.reject</source>
@@ -97,17 +97,16 @@
       </trans-unit>
       <trans-unit id="message.edited_successfully">
         <source>message.edited_successfully</source>
-        <target>Idea number %id% has been edited</target>
+        <target>Idea #%id% has been edited successfully</target>
       </trans-unit>
-<trans-unit id="message.approved_successfully">
-    <source>message.approved_successfully</source>
-    <target>The task has been successfully approved.</target>
-</trans-unit>
-<trans-unit id="message.rejected_successfully">
-    <source>message.rejected_successfully</source>
-    <target>The task has been rejected.</target>
-</trans-unit>
-
+      <trans-unit id="message.approved_successfully">
+        <source>message.approved_successfully</source>
+        <target>The idea has been approved.</target>
+      </trans-unit>
+      <trans-unit id="message.rejected_successfully">
+        <source>message.rejected_successfully</source>
+        <target>The idea has been rejected.</target>
+      </trans-unit>
 
       <trans-unit id="title.record_list">
         <source>title.record_list</source>
@@ -118,142 +117,153 @@
         <target>Record view #%id%</target>
       </trans-unit>
       <trans-unit id="title.task_details">
-          <source>title.task_details</source>
-          <target>Idea details no. %id%</target>
+        <source>title.task_details</source>
+        <target>Details of idea #%id%</target>
       </trans-unit>
       <trans-unit id="title.category_index">
-          <source>title.category_index</source>
-          <target>Category management</target>
+        <source>title.category_index</source>
+        <target>Category management</target>
       </trans-unit>
       <trans-unit id="title.task_index">
-          <source>title.task_index</source>
-          <target>Ideas</target>
+        <source>title.task_index</source>
+        <target>Ideas</target>
       </trans-unit>
       <trans-unit id="title.pending_view">
-          <source>title.pending_view</source>
-          <target>Ideas to approve</target>
+        <source>title.pending_view</source>
+        <target>Ideas to approve</target>
       </trans-unit>
       <trans-unit id="title.my_tasks">
-          <source>title.my_tasks</source>
-          <target>My ideas</target>
+        <source>title.my_tasks</source>
+        <target>My ideas</target>
       </trans-unit>
       <trans-unit id="title.task_create">
-          <source>title.task_create</source>
-          <target>Create a new idea</target>
+        <source>title.task_create</source>
+        <target>Create new idea</target>
+      </trans-unit>
+      <trans-unit id="title.task_edit">
+        <source>title.task_edit</source>
+        <target>Edit idea</target>
+      </trans-unit>
+      <trans-unit id="title.task_delete">
+        <source>title.task_delete</source>
+        <target>Delete idea</target>
       </trans-unit>
 
-           <trans-unit id="action.actions">
-                <source>action.actions</source>
-                <target>Available actions</target>
-           </trans-unit>
-           <trans-unit id="action.vote">
-                <source>action.vote</source>
-                <target>Vote</target>
-           </trans-unit>
-           <trans-unit id="action.edit">
-                <source>action.edit</source>
-                 <target>Edit</target>
-           </trans-unit>
-           <trans-unit id="action.view">
-                <source>action.view</source>
-                <target>Details</target>
-           </trans-unit>
-           <trans-unit id="action.delete">
-                <source>action.delete</source>
-                 <target>Delete</target>
-           </trans-unit>
-           <trans-unit id="action.back_to_list">
-                <source>action.back_to_list</source>
-                 <target>Back to list</target>
-           </trans-unit>
-           <trans-unit id="action.logout">
-                <source>action.logout</source>
-                 <target>Log out</target>
-           </trans-unit>
-           <trans-unit id="action.login">
-                <source>action.login</source>
-                 <target>Log in</target>
-           </trans-unit>
-           <trans-unit id="action.show">
-                <source>action.show</source>
-                 <target>Details</target>
-           </trans-unit>
-           <trans-unit id="action.create_category">
-                <source>action.create_category</source>
-                 <target>Add category</target>
-           </trans-unit>
-           <trans-unit id="action.accept">
-                <source>action.accept</source>
-                 <target>Accept</target>
-           </trans-unit>
-           <trans-unit id="action.reject">
-                <source>action.reject</source>
-                 <target>Reject</target>
-           </trans-unit>
-          <trans-unit id="action.create">
-                <source>action.create</source>
-                <target>Add idea</target>
-          </trans-unit>
-          <trans-unit id="action.save">
-                <source>action.save</source>
-                <target>Save</target>
-          </trans-unit>
+      <trans-unit id="action.actions">
+        <source>action.actions</source>
+        <target>Available actions</target>
+      </trans-unit>
+      <trans-unit id="action.vote">
+        <source>action.vote</source>
+        <target>Vote</target>
+      </trans-unit>
+      <trans-unit id="action.edit">
+        <source>action.edit</source>
+        <target>Edit</target>
+      </trans-unit>
+      <trans-unit id="action.view">
+        <source>action.view</source>
+        <target>Details</target>
+      </trans-unit>
+      <trans-unit id="action.delete">
+        <source>action.delete</source>
+        <target>Delete</target>
+      </trans-unit>
+      <trans-unit id="action.back_to_list">
+        <source>action.back_to_list</source>
+        <target>Back to list</target>
+      </trans-unit>
+      <trans-unit id="action.logout">
+        <source>action.logout</source>
+        <target>Logout</target>
+      </trans-unit>
+      <trans-unit id="action.login">
+        <source>action.login</source>
+        <target>Login</target>
+      </trans-unit>
+      <trans-unit id="action.show">
+        <source>action.show</source>
+        <target>Show</target>
+      </trans-unit>
+      <trans-unit id="action.create_category">
+        <source>action.create_category</source>
+        <target>Add category</target>
+      </trans-unit>
+      <trans-unit id="action.accept">
+        <source>action.accept</source>
+        <target>Accept</target>
+      </trans-unit>
+      <trans-unit id="action.reject">
+        <source>action.reject</source>
+        <target>Reject</target>
+      </trans-unit>
+      <trans-unit id="action.create">
+        <source>action.create</source>
+        <target>Add idea</target>
+      </trans-unit>
+      <trans-unit id="action.save">
+        <source>action.save</source>
+        <target>Save</target>
+      </trans-unit>
 
+      <trans-unit id="menu.task_index">
+        <source>menu.task_index</source>
+        <target>Ideas list</target>
+      </trans-unit>
+      <trans-unit id="menu.task_create">
+        <source>menu.task_create</source>
+        <target>Add idea</target>
+      </trans-unit>
+      <trans-unit id="menu.task_my">
+        <source>menu.task_my</source>
+        <target>My ideas</target>
+      </trans-unit>
+      <trans-unit id="menu.task_pending">
+        <source>menu.task_pending</source>
+        <target>Ideas to approve</target>
+      </trans-unit>
 
+      <trans-unit id="tab.ongoing">
+        <source>tab.ongoing</source>
+        <target>ONGOING VOTING</target>
+      </trans-unit>
+      <trans-unit id="tab.upcoming">
+        <source>tab.upcoming</source>
+        <target>UPCOMING VOTING</target>
+      </trans-unit>
+      <trans-unit id="tab.ended">
+        <source>tab.ended</source>
+        <target>ENDED VOTING</target>
+      </trans-unit>
 
+      <trans-unit id="status.approved">
+        <source>status.approved</source>
+        <target>Approved</target>
+      </trans-unit>
+      <trans-unit id="status.pending">
+        <source>status.pending</source>
+        <target>Pending</target>
+      </trans-unit>
 
-           <trans-unit id="menu.task_index">
-                <source>menu.task_index</source>
-                 <target>Idea list</target>
-           </trans-unit>
-           <trans-unit id="menu.task_create">
-                <source>menu.task_create</source>
-                 <target>Add idea</target>
-           </trans-unit>
-           <trans-unit id="menu.task_my">
-                <source>menu.task_my</source>
-                 <target>My ideas</target>
-           </trans-unit>
-           <trans-unit id="menu.task_pending">
-                <source>menu.task_pending</source>
-                 <target>Ideas to approve</target>
-           </trans-unit>
-
-<trans-unit id="tab.ongoing">
-     <source>tab.ongoing</source>
-     <target>ONGOING VOTINGS</target>
-</trans-unit>
-<trans-unit id="tab.upcoming">
-     <source>tab.upcoming</source>
-     <target>UPCOMING VOTINGS</target>
-</trans-unit>
-<trans-unit id="tab.ended">
-     <source>tab.ended</source>
-     <target>ENDED VOTINGS</target>
-</trans-unit>
-
-<trans-unit id="status.approved">
-    <source>status.approved</source>
-    <target>Approved</target>
-</trans-unit>
-<trans-unit id="status.pending">
-    <source>status.pending</source>
-    <target>Pending</target>
-</trans-unit>
-
-
-
-<trans-unit id="message.created_successfully">
+      <trans-unit id="message.task_created_successfully">
+        <source>message.task_created_successfully</source>
+        <target>Idea has been created successfully</target>
+      </trans-unit>
+      <trans-unit id="message.task_deleted_successfully">
+        <source>message.task_deleted_successfully</source>
+        <target>Idea has been deleted successfully</target>
+      </trans-unit>
+      <trans-unit id="message.created_successfully">
         <source>message.created_successfully</source>
-        <target>Task successfully created</target>
+        <target>Category has been created successfully</target>
       </trans-unit>
       <trans-unit id="message.category_contains_tasks">
         <source>message.category_contains_tasks</source>
-        <target>Category contains tasks</target>
+        <target>Category contains ideas</target>
       </trans-unit>
       <trans-unit id="message.deleted_successfully">
         <source>message.deleted_successfully</source>
-        <target>Task successfully deleted</target>
+        <target>Category has been deleted successfully</target>
       </trans-unit>
       <trans-unit id="message.ends_at_required_for_approval">
         <source>message.ends_at_required_for_approval</source>
@@ -265,7 +275,7 @@
       </trans-unit>
       <trans-unit id="message.already_voted_in_session">
         <source>message.already_voted_in_session</source>
-        <target>Already voted in session</target>
+        <target>You have already voted in this session!</target>
       </trans-unit>
       <trans-unit id="message.vote_added">
         <source>message.vote_added</source>
@@ -294,6 +304,10 @@
       <trans-unit id="message.no_pendings">
         <source>message.no_pendings</source>
         <target>No pending items</target>
+      </trans-unit>
+      <trans-unit id="label.empty_list">
+        <source>label.empty_list</source>
+        <target>No items to display</target>
       </trans-unit>
     </body>
   </file>
