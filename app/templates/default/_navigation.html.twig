@@ -1,0 +1,7 @@
+{% if is_granted('ROLE_USER') %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('task_my') }}">
+            {{ 'title.my_tasks'|trans }}
+        </a>
+    </li>
+{% endif %}

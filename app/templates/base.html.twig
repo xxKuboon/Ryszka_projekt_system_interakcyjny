@@ -15,24 +15,59 @@
     {% endblock %}
 </head>
 <body>
-<div class="container-fluid">
-    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        <div>{{ app.user.email }}</div>
-        <div>
-            <a href="{{ url('app_logout') }}">{{ 'action.logout'|trans }}</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url('task_index') }}">POMYSŁAW</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('task_index') }}">{{ 'menu.task_index'|trans }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('task_create') }}">{{ 'menu.task_create'|trans }}</a>
+                </li>
+                {% if is_granted('ROLE_USER') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('task_my') }}">{{ 'menu.task_my'|trans }}</a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link text-warning fw-bold" href="{{ url('task_pending') }}">{{ 'menu.task_pending'|trans }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-info" href="{{ url('category_index') }}">{{ 'title.category_index'|trans }}</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    {% else %}
-        <div>
-            <a href="{{ url('app_login') }}">{{ 'action.login'|trans }}</a>
+            <ul class="navbar-nav ms-auto">
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li class="nav-item text-light d-flex align-items-center me-3">
+                        {{ app.user.email }}
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-sm" href="{{ url('app_logout') }}">{{ 'action.logout'|trans }}</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-sm" href="{{ url('app_login') }}">{{ 'action.login'|trans }}</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    {% endif %}
+    </div>
+</nav>
 
+<div class="container">
     {% include 'default/_flash_messages.html.twig' %}
     {% block body %}{% endblock %}
 </div>
 
 {% block javascripts %}
-    {# {% block importmap %}{{ importmap('app') }}{% endblock %} #}
     <script
         src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
         integrity="sha256-kmHvs0B+0pCW5GVHUNjv9r0mY0IvSIRcf7zGUDTDQM="

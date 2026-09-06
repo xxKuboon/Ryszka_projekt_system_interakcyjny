@@ -21,9 +21,10 @@ class CategoryRepository extends ServiceEntityRepository
     /**
      * Items per page.
      *
-     * @constant int
+     * @varant int
      */
     public const PAGINATOR_ITEMS_PER_PAGE = 10;
+
     /**
      * Constructor.
      *

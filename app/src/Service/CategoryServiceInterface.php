@@ -1,10 +1,17 @@
 <?php
 
+/**
+ * Copyright (c) Jakub Ryszka.
+ */
+
 namespace App\Service;
 
 use App\Entity\Category;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
+/**
+ * Interface CategoryServiceInterface.
+ */
 interface CategoryServiceInterface
 {
     /**

@@ -1,80 +1,132 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{ 'title.task_list'|trans }}
+    {{ 'title.task_index'|trans }}
 {% endblock %}
 
 {% block body %}
-    <h1>{{ 'title.task_list'|trans }}</h1>
-    {% if pagination is defined and pagination.items|length %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ 'title.task_index'|trans }}</h1>
+    </div>
 
-        <div class="navigation text-center">
-            {{ knp_pagination_render(pagination) }}
-        </div>
-        <div>
-            <a class="btn btn-outline-success btn-sm" href="{{ url('task_create') }}" title="{{ 'action.create'|trans }}">
-                {{ 'action.create'|trans }}
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {{ (current_tab ?? 'ongoing') == 'ongoing' ? 'active' : '' }}" href="{{ path('task_vote_ongoing') }}">
+                {{ 'tab.ongoing'|trans }}
             </a>
-        </div>
-    {% if is_granted('CATEGORY_INDEX') %}
-        <div>
-            <a class="btn btn-outline-success btn-sm" href="{{ url('category_index') }}" title="{{ 'category'|trans }}">
-                {{ 'category'|trans }}
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ (current_tab ?? '') == 'upcoming' ? 'active' : '' }}" href="{{ path('task_vote_upcoming') }}">
+                {{ 'tab.upcoming'|trans }}
             </a>
-        </div>
-    {% endif %}
-        <table class="table table-striped">
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ (current_tab ?? '') == 'ended' ? 'active' : '' }}" href="{{ path('task_vote_ended') }}">
+                {{ 'tab.ended'|trans }}
+            </a>
+        </li>
+    </ul>
+
+    {% if pagination is defined and pagination|length %}
+        <table class="table table-striped align-middle">
             <thead>
             <tr>
-                <th>{{ knp_pagination_sortable(pagination, 'NUMER'|trans, 'task.id') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'DATA UTOWORZENIA'|trans, 'task.createdAt') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'OSTATNIA AKTUALIZACJA'|trans, 'task.updatedAt') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'TYTUŁ'|trans, 'task.title') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'KATEGORIA'|trans, 'category.title') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'AUTOR'|trans, 'author.email') }}</th>
-                <th>{{ 'AKCJE'|trans }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.id'|trans, 't.id') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.created_at'|trans, 't.createdAt') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.title'|trans, 't.title') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.category'|trans, 'c.title') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.author'|trans, 'u.email') }}</th>
+
+                {% if current_tab == 'upcoming' %}
+                    <th>{{ knp_pagination_sortable(pagination, 'label.starts_at'|trans, 't.startsAt') }}</th>
+                    <th>{{ knp_pagination_sortable(pagination, 'label.ends_at'|trans, 't.endsAt') }}</th>
+                {% else %}
+                    <th>{{ knp_pagination_sortable(pagination, 'label.ends_at'|trans, 't.endsAt') }}</th>
+                {% endif %}
+
+                <th>{{ knp_pagination_sortable(pagination, 'label.votes_count'|trans, 't.votesCount') }}</th>
+                <th>{{ 'action.actions'|trans }}</th>
             </tr>
             </thead>
             <tbody>
-            {% for task in pagination.items %}
+            {% set now = 'now'|date('U') %}
+            {% for task in pagination %}
                 <tr>
                     <td>{{ task.id }}</td>
                     <td>{{ task.createdAt|format_date('long') }}</td>
-                    <td>{{ task.updatedAt|format_date('long') }}</td>
-                    <td>{{ task.title }}</td>
-                    <td>{{ task.category.title }}</td>
-                    <td>{{ task.author ? task.author.email : '-' }}</td>
                     <td>
-                        {% if is_granted('TASK_VIEW', task) %}
-                            <a class="btn btn-outline-primary btn-sm" href="{{ url('task_view', {id: task.id}) }}" title="{{ 'action.show'|trans }}">
-                                {{ 'action.show'|trans }}
-                            </a>
-                        {% endif %}
+                        <a href="{{ path('task_view', {id: task.id}) }}">{{ task.title }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('task_category', {id: task.category.id}) }}">{{ task.category.title ?? '-' }}</a>
+                    </td>
+                    <td>{{ task.author ? task.author.email : '-' }}</td>
 
-                        {% if is_granted('TASK_EDIT', task) %}
-                            <a class="btn btn-outline-success btn-sm" href="{{ url('task_edit', {id: task.id}) }}" title="{{ 'action.edit'|trans }}">
-                                {{ 'action.edit'|trans }}
-                            </a>
-                        {% endif %}
+                    {% if current_tab == 'upcoming' %}
+                        <td>{{ task.startsAt ? task.startsAt|format_datetime('medium', 'short') : '-' }}</td>
+                        <td>{{ task.endsAt ? task.endsAt|format_datetime('medium', 'short') : '-' }}</td>
+                    {% else %}
+                        <td>{{ task.endsAt ? task.endsAt|format_datetime('medium', 'short') : '-' }}</td>
+                    {% endif %}
 
-                        {% if is_granted('TASK_DELETE', task) %}
-                            <a class="btn btn-outline-danger btn-sm" href="{{ url('task_delete', {id: task.id}) }}" title="{{ 'action.delete'|trans }}">
-                                {{ 'action.delete'|trans }}
-                            </a>
-                        {% endif %}
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <span>
+                                <strong>{{ task.votesCount }}</strong>
+                                {% if task.minVotesRequired > 0 %}
+                                    / {{ task.minVotesRequired }}
+                                {% endif %}
+                            </span>
+
+                            {% set hasVoted = false %}
+                            {% if app.user %}
+                                {% if task.id in app.session.get('voted_tasks', []) %}
+                                    {% set hasVoted = true %}
+                                {% endif %}
+                            {% else %}
+                                {% if app.session.get('anonymous_voted', false) %}
+                                    {% set hasVoted = true %}
+                                {% endif %}
+                            {% endif %}
+
+                            {% set startsAtTimestamp = task.startsAt ? task.startsAt|date('U') : 0 %}
+                            {% if not task.isExpired() and task.status.value == 'approved' and (startsAtTimestamp == 0 or startsAtTimestamp <= now) %}
+                                {% if hasVoted %}
+                                    <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                        {{ 'action.vote'|trans }}
+                                    </button>
+                                {% else %}
+                                    <form action="{{ url('task_vote', {id: task.id}) }}" method="post" class="d-inline m-0">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('vote' ~ task.id) }}">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            {{ 'action.vote'|trans }}
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('task_view', {id: task.id}) }}" class="btn btn-outline-info btn-sm">{{ 'action.view'|trans }}</a>
+                            {% if is_granted('TASK_EDIT', task) %}
+                                <a href="{{ path('task_edit', {id: task.id}) }}" class="btn btn-outline-warning btn-sm">{{ 'action.edit'|trans }}</a>
+                            {% endif %}
+                            {% if is_granted('TASK_DELETE', task) %}
+                                <a href="{{ path('task_delete', {id: task.id}) }}" class="btn btn-outline-danger btn-sm">{{ 'action.delete'|trans }}</a>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
 
-        <div class="navigation text-center">
+        <div class="navigation d-flex justify-content-center">
             {{ knp_pagination_render(pagination) }}
         </div>
-
     {% else %}
-        <p>
-            {{ 'message.empty_list'|trans }}
-        </p>
+        <p>{{ '
+        ge.empty_list'|trans }}</p>
     {% endif %}
 {% endblock %}

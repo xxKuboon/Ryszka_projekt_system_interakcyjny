@@ -7,7 +7,7 @@
 {% block body %}
     <h1>{{ 'title.task_details'|trans({'%id%': task.id|default('')}) }}</h1>
 
-    {% if task is defined and task|length %}
+    {% if task is defined and task is not null %}
         <dl class="dl-horizontal">
             <dt>{{ 'label.id'|trans }}</dt>
             <dd>{{ task.id }}</dd>
@@ -18,20 +18,58 @@
             <dt>{{ 'label.updated_at'|trans }}</dt>
             <dd>{{ task.updatedAt|format_date('long') }}</dd>
 
+            <dt>{{ 'label.ends_at'|trans }}</dt>
+            <dd>{{ task.endsAt ? task.endsAt|format_datetime('long', 'short') : '-' }}</dd>
+
             <dt>{{ 'label.title'|trans }}</dt>
             <dd>{{ task.title }}</dd>
 
             <dt>{{ 'label.category'|trans }}</dt>
-            <dd>{{ task.category.title }}</dd>
+            <dd>{{ task.category ? task.category.title : '-' }}</dd>
 
             <dt>{{ 'label.author'|trans }}</dt>
             <dd>{{ task.author ? task.author.email : '-' }}</dd>
 
-            {% if task.description is defined and task.description is not empty %}
-                <dt>{{ 'label.description'|trans }}</dt>
-                <dd>{{ task.description|nl2br }}</dd>
+            <dt>{{ 'label.votes_count'|trans }}</dt>
+            <dd>
+                <strong>{{ task.votesCount }}</strong>
+                {% if task.minVotesRequired > 0 %}
+                    / {{ task.minVotesRequired }} ({{ 'label.min_required'|trans }})
+                    {% if task.hasMetThreshold() %}
+                        <span class="badge bg-success">{{ 'label.threshold_met'|trans }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ 'label.threshold_not_met'|trans }}</span>
+                    {% endif %}
+                {% endif %}
+            </dd>
+
+            {% if task.comment is defined and task.comment is not empty %}
+                <dt>{{ 'label.comment'|trans }}</dt>
+                <dd>{{ task.comment|nl2br }}</dd>
             {% endif %}
         </dl>
+
+        <div class="my-3">
+            {% set now = 'now'|date('U') %}
+            {% set startsAtTimestamp = task.startsAt ? task.startsAt|date('U') : 0 %}
+
+            {% if startsAtTimestamp > 0 and startsAtTimestamp > now %}
+                <div class="alert alert-warning" role="alert">
+                    {{ 'message.the_voting_hasnt_started'|trans }}
+                </div>
+            {% elseif task.isExpired() %}
+                <div class="alert alert-warning" role="alert">
+                    {{ 'message.voting_has_ended'|trans }}
+                </div>
+            {% elseif task.status.value == 'approved' %}
+                <form action="{{ url('task_vote', {id: task.id}) }}" method="post" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('vote' ~ task.id) }}">
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'action.vote'|trans }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
 
         <p>
             <a class="btn btn-outline-secondary" href="{{ url('task_index') }}" title="{{ 'action.back_to_list'|trans }}">

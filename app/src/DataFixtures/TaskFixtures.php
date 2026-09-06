@@ -7,33 +7,26 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Enum\TaskStatus;
 use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Persistence\ObjectManager;
-use Faker\Generator;
 
 /**
  * Class TaskFixtures.
- *
- * @psalm-suppress MissingConstructor
  */
 class TaskFixtures extends AbstractBaseFixtures implements DependentFixtureInterface
 {
     /**
      * Load data.
-     *
-     * @psalm-suppress PossiblyNullPropertyFetch
-     * @psalm-suppress PossiblyNullReference
-     * @psalm-suppress UnusedClosureParam
      */
     public function loadData(): void
     {
-        if (!$this->manager instanceof ObjectManager || !$this->faker instanceof Generator) {
+        if (null === $this->manager) {
             return;
         }
 
-        $this->createMany(100, 'task', function (int $i) {
+        $this->createMany(50, 'tasks', function (int $i) {
             $task = new Task();
             $task->setTitle($this->faker->sentence);
             $task->setCreatedAt(
@@ -46,7 +39,6 @@ class TaskFixtures extends AbstractBaseFixtures implements DependentFixtureInter
                     $this->faker->dateTimeBetween('-100 days', '-1 days')
                 )
             );
-            $task->setComment($this->faker->boolean(70) ? $this->faker->realText(1024) : null);
 
             /** @var Category $category */
             $category = $this->getRandomReference('category', Category::class);
@@ -56,18 +48,30 @@ class TaskFixtures extends AbstractBaseFixtures implements DependentFixtureInter
             $author = $this->getRandomReference('user', User::class);
             $task->setAuthor($author);
 
+            // Status: część zatwierdzonych (na stronę główną), część w poczekalni
+            if (0 === $i % 3) {
+                $task->setStatus(TaskStatus::PENDING);
+            } else {
+                $task->setStatus(TaskStatus::APPROVED);
+            }
+
             return $task;
         });
+
+        $this->manager->flush();
     }
 
     /**
      * This method must return an array of fixtures classes
-     * on which the implementing class depends on.
+     * on which the implementing class depends.
      *
-     * @return string[] of dependencies
+     * @return string[] All dependency fixture classes
      */
     public function getDependencies(): array
     {
-        return [CategoryFixtures::class, UserFixtures::class];
+        return [
+            CategoryFixtures::class,
+            UserFixtures::class,
+        ];
     }
 }

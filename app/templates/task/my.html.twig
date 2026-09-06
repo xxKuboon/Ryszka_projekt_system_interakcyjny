@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'title.my_tasks'|trans }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title.my_tasks'|trans }}</h1>
+
+    {% if pagination is defined and pagination|length %}
+        <table class="table table-striped align-middle">
+            <thead>
+            <tr>
+                <th>{{ knp_pagination_sortable(pagination, 'label.id'|trans, 'task.id') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.title'|trans, 'task.title') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.category'|trans, 'category.title') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.status'|trans, 'task.status') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.votes_count'|trans, 'task.votesCount') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.created_at'|trans, 'task.createdAt') }}</th>
+                <th>{{ 'label.actions'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for task in pagination %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>
+                        <a href="{{ path('task_view', {id: task.id}) }}">
+                            {{ task.title }}
+                        </a>
+                    </td>
+                    <td>{{ task.category.title ?? '-' }}</td>
+                    <td>
+                        <span class="badge
+                            {% if task.status.value == 'APPROVED' or task.status == 'APPROVED' %}bg-success
+                            {% elseif task.status.value == 'REJECTED' or task.status == 'REJECTED' %}bg-danger
+                            {% else %}bg-warning text-dark{% endif %}">
+                            {{ ('status.' ~ (task.status.value ?? task.status))|lower|trans }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ task.votesCount }}</span>
+                    </td>
+                    <td>{{ task.createdAt|date('Y-m-d H:i') }}</td>
+                    <td>
+                        <a class="btn btn-outline-primary btn-sm" href="{{ path('task_view', {id: task.id}) }}">
+                            {{ 'action.show'|trans }}
+                        </a>
+                        {% if is_granted('TASK_EDIT', task) %}
+                            <a class="btn btn-outline-success btn-sm" href="{{ path('task_edit', {id: task.id}) }}">
+                                {{ 'action.edit'|trans }}
+                            </a>
+                        {% endif %}
+                        {% if is_granted('TASK_DELETE', task) %}
+                            <a class="btn btn-outline-danger btn-sm" href="{{ path('task_delete', {id: task.id}) }}">
+                                {{ 'action.delete'|trans }}
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="navigation d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            {{ 'message.empty_list'|trans }}
+        </div>
+    {% endif %}
+
+    <div class="mt-3">
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('task_create') }}" class="btn btn-success">
+                {{ 'action.create'|trans }}
+            </a>
+            <a href="{{ path('task_index') }}" class="btn btn-outline-secondary ms-2" title="{{ 'action.back_to_list'|trans }}">
+                {{ 'action.back_to_list'|trans }}
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}

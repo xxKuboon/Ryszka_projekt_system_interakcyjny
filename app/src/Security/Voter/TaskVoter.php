@@ -18,32 +18,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class TaskVoter extends Voter
 {
-    /**
-     * Delete permission.
-     *
-     * @var string
-     */
     public const DELETE = 'TASK_DELETE';
-
-    /**
-     * Edit permission.
-     *
-     * @var string
-     */
     public const EDIT = 'TASK_EDIT';
-
-    /**
-     * View permission.
-     *
-     * @var string
-     */
     public const VIEW = 'TASK_VIEW';
-
-    /**
-     * Getting to category page.
-     *
-     * @var string
-     */
     public const CATEGORY = 'CATEGORY_INDEX';
 
     /**
@@ -56,16 +33,16 @@ final class TaskVoter extends Voter
     }
 
     /**
-     * Determines if this voter supports the attribute and subject.
+     * Determines if the attribute and subject are supported.
      *
      * @param string $attribute An attribute
-     * @param mixed  $subject   The subject to secure
+     * @param mixed  $subject   The subject
      *
      * @return bool Result
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if ($attribute === self::CATEGORY) {
+        if (self::CATEGORY === $attribute) {
             return true;
         }
 
@@ -76,25 +53,33 @@ final class TaskVoter extends Voter
     /**
      * Perform a single access check operation on a given attribute, subject and token.
      *
-     * @param string         $attribute Permission name
-     * @param mixed          $subject   Object
-     * @param TokenInterface $token     Security token
-     * @param Vote|null      $vote      Vote object
+     * @param string         $attribute Attribute
+     * @param mixed          $subject   Subject
+     * @param TokenInterface $token     Token
+     * @param Vote|null      $vote      Vote
      *
-     * @return bool Vote result
+     * @return bool Result
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
+        if (self::VIEW === $attribute) {
+            return true;
+        }
+
         $user = $token->getUser();
         if (!$user instanceof UserInterface) {
             return false;
         }
 
+        // Administrator ma zawsze pełne uprawnienia do wszystkiego
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
         return match ($attribute) {
             self::EDIT => $subject instanceof Task && $this->canEdit($subject, $user),
             self::DELETE => $subject instanceof Task && $this->canDelete($subject, $user),
-            self::VIEW => $subject instanceof Task && $this->canView($subject, $user),
-            self::CATEGORY => $this->canCategory(),
+            self::CATEGORY => $this->canCategory($user),
             default => false,
         };
     }
@@ -102,49 +87,38 @@ final class TaskVoter extends Voter
     /**
      * Checks if user can delete task.
      *
-     * @param Task          $task Task entity
+     * @param Task          $task Task
      * @param UserInterface $user User
      *
      * @return bool Result
      */
     private function canDelete(Task $task, UserInterface $user): bool
     {
-        return $task->getAuthor()?->getId() === $user->getId() || $this->security->isGranted('ROLE_ADMIN');
+        return $task->getAuthor() === $user || in_array('ROLE_ADMIN', $user->getRoles(), true);
     }
 
     /**
      * Checks if user can edit task.
      *
-     * @param Task          $task Task entity
+     * @param Task          $task Task
      * @param UserInterface $user User
      *
      * @return bool Result
      */
     private function canEdit(Task $task, UserInterface $user): bool
     {
-        return $task->getAuthor()?->getId() === $user->getId() || $this->security->isGranted('ROLE_ADMIN');
+        return $task->getAuthor() === $user || in_array('ROLE_ADMIN', $user->getRoles(), true);
     }
 
     /**
-     * Checks if a user can view a task.
+     * Checks if user can access category index.
      *
-     * @param Task          $task Task entity
      * @param UserInterface $user User
      *
      * @return bool Result
      */
-    private function canView(Task $task, UserInterface $user): bool
+    private function canCategory(UserInterface $user): bool
     {
-        return true;
-    }
-
-    /**
-     * Checks if a user can view a category tab.
-     *
-     * @return bool Result
-     */
-    private function canCategory(): bool
-    {
-        return $this->security->isGranted('ROLE_ADMIN');
+        return in_array('ROLE_ADMIN', $user->getRoles(), true);
     }
 }

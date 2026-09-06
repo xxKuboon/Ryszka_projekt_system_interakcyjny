@@ -7,6 +7,7 @@
 namespace App\Repository;
 
 use App\Entity\Category;
+use App\Entity\Enum\TaskStatus;
 use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -20,42 +21,126 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TaskRepository extends ServiceEntityRepository
 {
+    /**
+     * Constructor.
+     *
+     * @param ManagerRegistry $registry Manager registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Task::class);
+        parent::__construct(
+            $registry,
+            Task::class
+        );
     }
 
-
-
     /**
-     * Query all records.
+     * Query tasks with optional filters (category, author, status).
+     *
+     * @param Category|null   $category Category filter
+     * @param User|null       $author   Author filter
+     * @param TaskStatus|null $status   Status filter
      *
      * @return QueryBuilder Query builder
      */
-    public function queryAll(): QueryBuilder
+    public function queryAll(?Category $category = null, ?User $author = null, ?TaskStatus $status = TaskStatus::APPROVED): QueryBuilder
     {
-        return $this->createQueryBuilder('task')
+        $qb = $this->createQueryBuilder('t')
             ->select(
-                'partial task.{id, createdAt, updatedAt, title}',
-                'partial category.{id, title}',
-                'partial author.{id, email}'
+                'partial t.{id, createdAt, updatedAt, title, status, votesCount, minVotesRequired, startsAt, endsAt}',
+                'partial c.{id, title}',
+                'partial u.{id, email}'
             )
-            ->join('task.category', 'category')
-            ->leftJoin('task.author', 'author');
+            ->leftJoin('t.category', 'c')
+            ->leftJoin('t.author', 'u')
+            ->orderBy('t.createdAt', 'DESC');
+
+        if (null !== $status) {
+            $qb->andWhere('t.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        if (null !== $category) {
+            $qb->andWhere('t.category = :category')
+                ->setParameter('category', $category);
+        }
+
+        if (null !== $author) {
+            $qb->andWhere('t.author = :author')
+                ->setParameter('author', $author);
+        }
+
+        return $qb;
     }
 
     /**
-     * Query all records by author.
-     *
-     * @param User $author User entity
+     * Query upcoming tasks (startsAt > now).
      *
      * @return QueryBuilder Query builder
      */
-    public function queryByAuthor(User $author): QueryBuilder
+    public function queryUpcoming(): QueryBuilder
     {
-        return $this->queryAll()
-            ->andWhere('task.author = :author')
-            ->setParameter('author', $author);
+        $now = new \DateTimeImmutable();
+        $qb = $this->queryAll(null, null, TaskStatus::APPROVED);
+
+        return $qb->andWhere('t.startsAt > :now')
+            ->setParameter('now', $now)
+            ->orderBy('t.startsAt', 'ASC');
+    }
+
+    /**
+     * Query ongoing tasks (startsAt <= now and endsAt >= now).
+     *
+     * @return QueryBuilder Query builder
+     */
+    public function queryOngoing(): QueryBuilder
+    {
+        $now = new \DateTimeImmutable();
+        $qb = $this->queryAll(null, null, TaskStatus::APPROVED);
+
+        return $qb->andWhere('(t.startsAt IS NULL OR t.startsAt <= :now)')
+            ->andWhere('(t.endsAt IS NULL OR t.endsAt >= :now)')
+            ->setParameter('now', $now)
+            ->orderBy('t.createdAt', 'DESC');
+    }
+
+    /**
+     * Query ended tasks (endsAt < now).
+     *
+     * @return QueryBuilder Query builder
+     */
+    public function queryEnded(): QueryBuilder
+    {
+        $now = new \DateTimeImmutable();
+        $qb = $this->queryAll(null, null, TaskStatus::APPROVED);
+
+        return $qb->andWhere('t.endsAt < :now')
+            ->setParameter('now', $now)
+            ->orderBy('t.endsAt', 'DESC');
+    }
+
+    /**
+     * Query tasks by status (e.g. Pending for Admin).
+     *
+     * @param TaskStatus $status Status
+     *
+     * @return QueryBuilder Query builder
+     */
+    public function queryByStatus(TaskStatus $status): QueryBuilder
+    {
+        return $this->queryAll(null, null, $status);
+    }
+
+    /**
+     * Query tasks by author (shows all statuses for the author).
+     *
+     * @param User $user Author
+     *
+     * @return QueryBuilder Query builder
+     */
+    public function queryByAuthor(User $user): QueryBuilder
+    {
+        return $this->queryAll(null, $user, null);
     }
 
     /**
@@ -67,10 +152,10 @@ class TaskRepository extends ServiceEntityRepository
      */
     public function countByCategory(Category $category): int
     {
-        $qb = $this->createQueryBuilder('task');
+        $qb = $this->createQueryBuilder('t');
 
-        return $qb->select($qb->expr()->countDistinct('task.id'))
-            ->where('task.category = :category')
+        return $qb->select($qb->expr()->countDistinct('t.id'))
+            ->where('t.category = :category')
             ->setParameter(':category', $category)
             ->getQuery()
             ->getSingleScalarResult();

@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'label.pending_page'|trans }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title.pending_view'|trans }}</h1>
+
+    {% if pagination is defined and pagination|length %}
+        <table class="table table-striped align-middle">
+            <thead>
+            <tr>
+                <th>{{ knp_pagination_sortable(pagination, 'Id', 't.id') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Data mod.', 't.updatedAt') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Tytuł', 't.title') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Kategoria', 'c.title') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Autor', 'u.email') }}</th>
+                <th>{{ 'action.actions'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for task in pagination %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.updatedAt|date('Y-m-d H:i') }}</td>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.category.title ?? '-' }}</td>
+                    <td>{{ task.author ? task.author.email : 'Anonim' }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('task_view', {id: task.id}) }}" class="btn btn-outline-info btn-sm">{{ 'action.view'|trans }}</a>
+                            <a href="{{ path('task_edit', {id: task.id}) }}" class="btn btn-outline-warning btn-sm">{{ 'action.edit'|trans }}</a>
+
+                            {# Przycisk Zatwierdź #}
+                            <form method="post" action="{{ path('task_status', {id: task.id, status: 'approved'}) }}" onsubmit="return confirm('{{ 'message.accept'|trans }}');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('status' ~ task.id) }}">
+                                <button class="btn btn-success btn-sm">{{ 'action.accept'|trans }}</button>
+                            </form>
+
+                            {# Przycisk Odrzuć #}
+                            <form method="post" action="{{ path('task_status', {id: task.id, status: 'rejected'}) }}" onsubmit="return confirm('{{ 'message.reject'|trans }}');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('status' ~ task.id) }}">
+                                <button class="btn btn-danger btn-sm">{{ 'action.reject'|trans }}</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="navigation d-flex justify-content-center">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    {% else %}
+        <p>{{ 'message.no_pendings'|trans }}</p>
+    {% endif %}
+{% endblock %}

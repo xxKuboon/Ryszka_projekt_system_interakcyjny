@@ -9,6 +9,7 @@ namespace App\Entity;
 use App\Entity\Enum\UserRole;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
     /**
      * Primary key.
@@ -31,8 +32,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Email.
-     *
-     * @var string|null
      */
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\NotBlank]
@@ -49,8 +48,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Hashed password.
-     *
-     * @var string|null
      */
     #[ORM\Column(type: 'string')]
     #[Assert\NotBlank]
@@ -99,7 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * Getter for roles.
+     * getter for roles.
      *
      * @see UserInterface
      *
@@ -108,20 +105,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
+
+        // Przekształcamy ewentualne obiekty Enuma na ich tekstową wartość (value)
+        $roles = array_map(
+            static fn ($role) => $role instanceof UserRole ? $role->value : (string) $role,
+            $roles
+        );
+
+        // Gwarantujemy obecność domyślnej roli
         $roles[] = UserRole::ROLE_USER->value;
 
-        return array_unique($roles);
+        return array_values(array_unique($roles));
     }
 
     /**
      * Setter for roles.
      *
-     * @param list<int, string> $roles Roles
+     * @param array<int, string|UserRole> $roles Roles
      */
     public function setRoles(array $roles): void
     {
-        $this->roles = $roles;
+        $this->roles = array_values(array_map(
+            static fn ($role) => $role instanceof UserRole ? $role->value : (string) $role,
+            $roles
+        ));
     }
 
     /**
@@ -155,5 +162,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * Checks whether this user is equal to the authenticated user.
+     *
+     * @param UserInterface $user User
+     *
+     * @return bool Result
+     */
+    public function isEqualTo(UserInterface $user): bool
+    {
+        if (!$user instanceof self) {
+            return false;
+        }
+
+        return $this->getUserIdentifier() === $user->getUserIdentifier();
     }
 }

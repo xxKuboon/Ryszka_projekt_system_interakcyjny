@@ -4,13 +4,11 @@
 
 {% block body %}
     <h1>Lista kategorii</h1>
-    <a href="{{ url('category_create') }}" class="btn btn-outline-primary btn-sm"><h4>Dodaj nową kategorię</h4></a>
     <div>
-        <a class="btn btn-outline-success btn-sm" href="{{ url('task_index') }}" title="{{ 'tasks'|trans }}">
-            {{ 'tasks'|trans }}
+        <a class="btn btn-outline-success btn-sm" href="{{ url('category_create') }}" title="{{ 'action.create_category'|trans }}">
+            {{ 'action.create_category'|trans }}
         </a>
     </div>
-
     {% if pagination is defined and pagination|length %}
         <table class="table table-striped">
             <thead>
@@ -30,9 +28,16 @@
                     <td>{{ category.createdAt|date('Y-m-d H:i:s') }}</td>
                     <td>{{ category.updatedAt|date('Y-m-d H:i:s') }}</td>
                     <td>
-                        <a href="{{ url('category_view', {id: category.id}) }}" class="btn btn-outline-primary btn-sm">Pokaż szczegóły</a>
-                        <a href="{{ url('category_edit', {id: category.id}) }}" class="btn btn-outline-primary btn-sm">Edytuj kategorię</a>
-                        <a href="{{ url('category_delete', {id: category.id}) }}" class="btn btn-outline-primary btn-sm">Usuń kategorię</a>
+                        <a href="{{ url('category_view', {id: category.id}) }}" class="btn btn-outline-primary btn-sm" title="{{ 'action.show'|trans }}">
+                           {{ 'action.show'|trans }}
+                        </a>
+                        <a href="{{ url('category_edit', {id: category.id}) }}" class="btn btn-outline-primary btn-sm" title="{{ 'action.edit'|trans }}">
+                            {{ 'action.edit'|trans }}
+                        </a>
+                        <a href="{{ url('category_delete', {id: category.id}) }}" class="btn btn-outline-primary btn-sm" title="{{ 'action.delete'|trans }}">
+                            {{ 'action.delete'|trans }}
+                        </a>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
