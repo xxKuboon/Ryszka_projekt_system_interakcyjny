@@ -10,12 +10,13 @@ use App\Entity\Category;
 use App\Form\Type\CategoryType;
 use App\Service\CategoryServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 /**
  * Class CategoryController.
@@ -44,6 +45,7 @@ class CategoryController extends AbstractController
         name: 'category_index',
         methods: ['GET']
     )]
+    #[IsGranted('CATEGORY_INDEX')]
     public function index(#[MapQueryParameter] int $page = 1): Response
     {
         $pagination = $this->categoryService->getPaginatedList($page);

@@ -70,6 +70,10 @@
                        <source>label.pending_page</source>
                         <target>Pomysły do zaakceptowania</target>
                   </trans-unit>
+                  <trans-unit id="label.none">
+                       <source>label.none</source>
+                        <target>Brak kategorii</target>
+                  </trans-unit>
 
       <trans-unit id="message.empty_list">
         <source>message.empty_list</source>

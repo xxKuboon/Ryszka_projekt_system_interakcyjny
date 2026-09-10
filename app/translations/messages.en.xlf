@@ -309,6 +309,10 @@
         <source>label.empty_list</source>
         <target>No items to display</target>
       </trans-unit>
+                        <trans-unit id="label.none">
+                             <source>label.none</source>
+                              <target>No category</target>
+                        </trans-unit>
     </body>
   </file>
 </xliff>
