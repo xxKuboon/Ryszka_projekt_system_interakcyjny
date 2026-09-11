@@ -21,7 +21,7 @@ final class TaskVoter extends Voter
     public const DELETE = 'TASK_DELETE';
     public const EDIT = 'TASK_EDIT';
     public const VIEW = 'TASK_VIEW';
-    public const CATEGORY = 'CATEGORY_MODIFY';
+    public const CATEGORY = 'CATEGORY_INDEX';
 
     /**
      * Constructor.
