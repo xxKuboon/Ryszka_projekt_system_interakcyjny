@@ -21,7 +21,7 @@ final class TaskVoter extends Voter
     public const DELETE = 'TASK_DELETE';
     public const EDIT = 'TASK_EDIT';
     public const VIEW = 'TASK_VIEW';
-    public const CATEGORY = 'CATEGORY_INDEX';
+    public const CATEGORY = 'CATEGORY_MODIFY';
 
     /**
      * Constructor.
@@ -87,7 +87,7 @@ final class TaskVoter extends Voter
     /**
      * Checks if user can delete task.
      *
-     * @param Task          $task Task
+     * @param Task         $task Task
      * @param UserInterface $user User
      *
      * @return bool Result
@@ -100,7 +100,7 @@ final class TaskVoter extends Voter
     /**
      * Checks if user can edit task.
      *
-     * @param Task          $task Task
+     * @param Task         $task Task
      * @param UserInterface $user User
      *
      * @return bool Result
